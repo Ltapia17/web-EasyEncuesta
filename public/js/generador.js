@@ -1,32 +1,32 @@
 'use strict'
 
 window.addEventListener('load',function(){
-var select = document.querySelector("#option");
+var select = document.querySelector("#select_largo_encuesta");
 var i ="";
 var input = document.querySelector("#input");
+
 
 select.addEventListener('change',function(e){
 	e.preventDefault();
 	input.innerHTML="";
-for(i =1;i<=select.value;i++){
-	console.log("valor de select "+select.value);
+	for(i =1;i<=select.value;i++){
+	//console.log("valor de select "+select.value);
 	createInputs();
-}	
-		
-	
+	}	
 });
+
+
 
 function createInputs(){
 	var element = document.createElement('div');
 	element.innerHTML=`
 	<div class="form-group">
 		<p>Pregunta ${i}</p>
-		<input type="text" id="${i}" class="form-control" />
-		
+		<input type="text" id="${i}" name="pregunta${i}" class="form-control"/>
 	</div>
 	<div class="form-group">
 		<p>Cantidad Respuestas</p>
-		<select id="respuestas" class="form-control" name="">
+		<select id=${i}  class="form-control" name="respuesta${i}">
 								<option value="0">Cantidad Respuestas</option>
 								<option id="2" value="2">2</option>
 								<option id="3" value="3">3</option>
@@ -39,8 +39,6 @@ function createInputs(){
 
 
 }
-
-
 
 });
 

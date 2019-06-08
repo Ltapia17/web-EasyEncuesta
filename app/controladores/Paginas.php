@@ -1,4 +1,4 @@
-<?php 
+<?php
 class Paginas extends Controlador{
 
 
@@ -9,123 +9,77 @@ class Paginas extends Controlador{
 
 		$this->usuarioModelo = $this->cargaModelo('Usuario');
 		$this->cargaApi = $this->cargaLibreria('Api');
-	}
+		$this->loginModelo = $this->cargaModelo('Login');
+
+	}	
 	
 	public function index(){
-
-		//obtener los usuarios
-
-		
-
-
-		//$this->cargaApi->test();
 
 		$this->cargaVista('paginas/inicio');
 	}
 
-
-
-	public function encuesta(){
-		$this->cargaVista('paginas/home/createpoll');
-	}
-
-	public function login(){
+public function login(){
 		$this->cargaVista('paginas/login');
 	}
 
 	public function home(){
-		$this->cargaVista('paginas/home/home');
+		if($_SERVER['REQUEST_METHOD']=='POST' && empty(!$_POST['email']) || empty(!$_POST['password'])){
+			$dates =[
+				'email' => filter_var(strtolower($_POST['email']),FILTER_SANITIZE_STRING),
+				'password' => filter_var(strtolower($_POST['password']),FILTER_SANITIZE_STRING)
+				];
+
+					if ($this->loginModelo->consultLogin($dates) == true) {
+						session_start();
+						$_SESSION['user'] = $dates['email'];
+						$this->cargaVista('paginas/home/home');
+						
+					}else{
+						redirect('paginas/login');
+					}
+
+		}else{
+			if (empty($_POST['email']) && empty($_POST['password'])){
+				
+				redirect('paginas/login');
+					}
+
+					
+			}
+		}
+
+			public function encuesta(){
+		$this->cargaVista('paginas/home/createpoll');
 	}
+
+
+
+
+	
 
 
 	public function addPool(){
-
-		if($_SERVER['REQUEST_METHOD'] == 'POST'){
-
-			$datos = ['nombre' =>trim($_POST['nombre']),
-				  'email' =>trim($_POST['email']),
-				  'telefono' =>trim($_POST['telefono'])
-			];
-			if($this->usuarioModelo->agregarUsuario($datos)){
-				redirecionar('paginas');
-			}else{
-				die('algo salio mal');
-			}
-		}else{
-			$datos = [
-				'nombre' => '',
-				'email' => '',
-				'telefono' => ''
-			];
-
-			$this->cargaVista('paginas/agregar', $datos);
-		}
-
 		
-	}
+		$pregunta="pregunta";
+		$select=$_POST['select'];
+		echo $select."<br>";
 
-	public function editar($id){
+		for($i = 1;$i<=$select;$i++){
+			$pregunta.$i=$_POST['pregunta'.$i];
+			echo $pregunta.$i."<br>";
+		}
 			
 
-		if($_SERVER['REQUEST_METHOD'] == 'POST'){
-
-			$datos = [
-				  'id_usuario' =>$id,
-				  'nombre' =>trim($_POST['nombre']),
-				  'email' =>trim($_POST['email']),
-				  'telefono' =>trim($_POST['telefono'])
-			];
-			if($this->usuarioModelo->actualizarUsuario($datos)){
-				redirecionar('paginas');
-			}else{
-				die('algo salio mal');
-			}
-		}else{
-
-			//obtener informacion de usuario desde el modelo
-
-			$usuario = $this->usuarioModelo->obtenerUsuarioId($id);
-
-			$datos = [
-				'id_usuario' => $usuario->id_usuario,
-				'nombre' => $usuario->nombre,
-				'email' => $usuario->email,
-				'telefono' => $usuario->telefono];
-
-			$this->cargaVista('paginas/editar', $datos);
-		}
-
 	}
 
-	public function borrar($id){
-
-		//obtener informacion de usuario desde el modelo
-
-		$usuario = $this->usuarioModelo->obtenerUsuarioId($id);
-
-		$datos = [
-			'id_usuario' => $usuario->id_usuario,
-			'nombre' => $usuario->nombre,
-			'email' => $usuario->email,
-			'telefono' => $usuario->telefono
-		];
-			
-
-		if($_SERVER['REQUEST_METHOD'] == 'POST'){
-
-			$datos = [
-				  'id_usuario' =>$id
-				  
-			];
-			if($this->usuarioModelo->borrarUsuario($datos)){
-				redirecionar('paginas');
-			}else{
-				die('algo salio mal');
-			}
+	public function createVariable($i,$preguntas){
+			$preguntaguardada=$preguntas.$i;
+			$preguntaguardada=$_POST['pregunta'.$i];
 		}
-		$this->cargaVista('paginas/borrar', $datos);
 
-	}
+
+
+	
 
 	
 }

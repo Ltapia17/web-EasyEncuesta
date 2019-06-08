@@ -6,7 +6,7 @@
 </head>
 <body>
 
-	<form id="form" action="<?php echo RUTA_URL; ?>paginas/home/addEncuesta" method="post">
+	<form id="form" action="<?php echo RUTA_URL; ?>home/addPool" method="post">
 	<div class="row justify-content-center">
 		<div class="col-md-4">
 			<div class="card">
@@ -24,7 +24,7 @@
 					</div>
 					<div class="form-group">
 						<p>Cantidad de preguntas por Encuesta</p>
-							<select id="option" class="form-control" name="">
+							<select id="select_largo_encuesta" class="form-control" name="select">
 								<option value="0">Cantidad Preguntas</option>
 								<option id="1" value="1">1</option>
 								<option id="2" value="2">2</option>

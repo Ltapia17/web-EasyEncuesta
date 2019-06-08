@@ -7,7 +7,7 @@
 <body>
 
 	<div class="container">
-		<a href="<?php echo RUTA_URL; ?>paginas/encuesta">Generar Encuesta</a>
+		<a href="<?php echo RUTA_URL; ?>home/encuesta">Generar Encuesta</a>
 	</div>
 
 </body>

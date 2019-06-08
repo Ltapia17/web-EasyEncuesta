@@ -1,93 +1,90 @@
-<?php 
+<?php
 
-// clase para conectarse a la bd y ejercutas consulta
+
 
 class Base{
 
-	private $host= DB_HOST;
-	private $usuario= DB_USUARIO;
-	private $password= DB_PASSWORD;
-	private $nombre_base= DB_NOMBRE;
+ 
+ 	private $host=DB_HOST;
+ 	private $user=DB_USUARIO;
+ 	private $password=DB_PASSWORD;
+ 	private $name_db=DB_NOMBRE;
 
-	private $dbh; //databasehandler
-	private $stmt; //statament
-	private $error;
+ 	private $dbh;
+ 	private $stmt;
+ 	private $error;
 
-	public function __construct(){
-		// configurar
-		$dsn = 'mysql:host=' . $this->host. ';dbname=' . $this->nombre_base;
+ 	public function __construct(){
 
-		$opciones = array(
-			PDO::ATTR_PERSISTENT => true,
-			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-		);
+ 		$dsn = 'mysql:host=' . $this->host. ';dbname=' .$this->name_db;
 
-		// creamos una instancia de pdo
+ 		$options = array(
+ 			PDO::ATTR_PERSISTENT => true,
+ 			PDO::ATTR_ERRMODE=> PDO::ERRMODE_EXCEPTION
+ 		);
 
-try {
-
-	$this->dbh = new PDO($dsn,$this->usuario,$this->password,$opciones);
-
-	$this->dbh->exec('set names utf8');
-
-}catch (PDOExeption $e){
-	$this->error = $e->getMessage();
-	echo $this->error;
-	die();
-}
-
-
-}
-
-	//preraramos la consulta
-	public function query($sql){
-		$this->stmt=$this->dbh->prepare($sql);
-	}
-
-	//vinculaomos la consulta con bind
-	public function bind($parametro, $valor , $tipo = null){
-		if(is_null($tipo)){
-			switch (true) {
-				case is_int($valor):
-					$tipo= PDO::PARAM_INT;
-					break;
-					case is_bool($valor):
-					$tipo= PDO::PARAM_BOL;
-					break;
-					case is_null($valor):
-					$tipo= PDO::PARAM_NULL;
-					break;
-				
-				default:
-					$tipo= PDO::PARAM_STR;
-					break;
-			}
-		}
-
-		$this ->stmt->bindValue($parametro,$valor,$tipo);
-	}
-
-	// ejecutamos la cnsulta
-	public function execute(){
-		return $this->stmt->execute();
-		
-	}
- 	//Obtener registros de la conslta
-
- 	public function registros(){
- 		$this->execute();
-		return $this->stmt->fetchAll(PDO::FETCH_OBJ);
+ 		try{
+ 			$this->dbh = new PDO($dsn,$this->user,$this->password,$options);
+ 			$this->dbh->exec('set names utf8');
+ 		}catch (PDOExeption $e){
+ 			$this->error = $e->getMessage();
+ 			echo $this->error;
+ 			die();
+ 		}
  	}
 
- 	//obtener solo un registro
- 	public function registro(){
- 		$this->execute();
-		return $this->stmt->fetch(PDO::FETCH_OBJ);
+ 	public function query($sql){
+ 		$this->stmt=$this->dbh->prepare($sql);
  	}
 
- 	//obtener cantidad de filas con el metodo rowCount
- 	public function rowCount(){
+ 	public function bind($param ,$value ,$type = null){
+ 		if(is_null($type)){
+ 			switch (true){
+ 				case is_int($value):
+ 				$type= PDO::PARAM_INT;
+ 				break;
+ 				case is_bool($value):
+ 				$type= PDO::PARAM_BOL;
+ 				break;
+ 				case is_null($value):
+ 				$type= PDO::PARAM_NULL;
+ 				break;
+
+ 				default:
+ 				$type=PDO::PARAM_STR;
+ 				break;
+ 			}
+ 		}
+
+ 		$this->stmt->bindValue($param,$value,$type);
+ 	}
+
+ 	public function execute(){
+ 		return $this->stmt->execute();
+
+ 	}
+
+ 	public function getRegistersBd(){
+ 		$this->execute();
+ 		return $this->stmt->fetchAll(PDO::FETCH_OBJ);
+	 }
+
+	 public function getNumberRowBd(){
+	 	$this->execute();
+	 	return $this->stmt->fetch(PDO::FETCH_ASSOC);
+	 }
+	 
+	 public function getRegisterBd(){
+		 $this->execute();
+		 return $this->stmt->fetch(PDO::FETCH_OBJ);
+	 }
+
+	 public function rowCount(){
  		return $this->stmt->rowCount();
  	}
 
- 	}
+	 
+
+ }
+
+ ?>
